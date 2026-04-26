@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>What Should I Eat? · Tartu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700&family=DM+Sans:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #f7f6f2;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      border: 1px solid #e8e6e0;
+      padding: 2.5rem 2rem;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 2px 24px rgba(0,0,0,0.06);
+    }
+
+    .eat-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #aaa;
+      margin-bottom: 1.5rem;
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+
+    .chip {
+      padding: 5px 13px;
+      border-radius: 999px;
+      border: 1px solid #ddd;
+      font-size: 12px;
+      font-family: 'DM Sans', sans-serif;
+      color: #666;
+      cursor: pointer;
+      background: #fff;
+      transition: all 0.12s;
+      white-space: nowrap;
+    }
+
+    .chip.active {
+      background: #f0efeb;
+      color: #111;
+      border-color: #bbb;
+    }
+
+    .big-btn {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      border: 1px solid #ddd;
+      background: #fff;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 0.15s, background 0.15s;
+      outline: none;
+      margin: 0 auto;
+    }
+
+    .big-btn:hover { background: #f7f6f2; transform: scale(1.04); }
+    .big-btn:active { transform: scale(0.97); }
+    .big-btn.loading { pointer-events: none; }
+
+    .btn-emoji { font-size: 32px; line-height: 1; }
+
+    .btn-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #888;
+    }
+
+    .result-card {
+      margin-top: 1.75rem;
+      background: #fff;
+      border: 1px solid #e8e6e0;
+      border-radius: 16px;
+      padding: 1.25rem 1.5rem;
+      text-align: left;
+      animation: fadeUp 0.3s ease;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .result-meal {
+      font-family: 'Syne', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 4px;
+      line-height: 1.2;
+    }
+
+    .result-restaurant {
+      font-size: 13px;
+      color: #888;
+    }
+
+    .cuisine-tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 6px;
+      background: #e8f0fb;
+      color: #2a5cb8;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .result-why {
+      font-size: 13px;
+      color: #888;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+      font-style: italic;
+    }
+
+    .bolt-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding: 11px;
+      background: #34d186;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Syne', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+
+    .bolt-link:hover { opacity: 0.88; }
+
+    .again-btn {
+      margin-top: 8px;
+      width: 100%;
+      padding: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: #888;
+      background: transparent;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+
+    .again-btn:hover { background: #f7f6f2; }
+
+    .spinner {
+      width: 28px; height: 28px;
+      border: 2px solid #e0e0e0;
+      border-top-color: #34d186;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <p class="eat-title">What should I eat?</p>
+
+    <div class="filter-row" id="filterRow">
+      <button class="chip active" data-cuisine="any">Everything</button>
+      <button class="chip" data-cuisine="burger">Burgers</button>
+      <button class="chip" data-cuisine="pizza">Pizza</button>
+      <button class="chip" data-cuisine="sushi">Sushi</button>
+      <button class="chip" data-cuisine="kebab">Kebab</button>
+      <button class="chip" data-cuisine="street">Street food</button>
+      <button class="chip" data-cuisine="pub">Pub food</button>
+      <button class="chip" data-cuisine="georgian">Georgian</button>
+    </div>
+
+    <button class="big-btn" id="mainBtn" onclick="getSuggestion()">
+      <span class="btn-emoji">🍽️</span>
+      <span class="btn-label">Surprise me</span>
+    </button>
+
+    <div id="resultArea"></div>
+  </div>
+
+  <script>
+    const RESTAURANTS = [
+      { name: "McDonald's Turu", cuisine: "burger", dish: "Big Mac meal", url: "https://food.bolt.eu/en-US/2-tartu/p/880-mcdonaldsr-turu/" },
+      { name: "McDonald's Lõunakeskus", cuisine: "burger", dish: "McChicken meal", url: "https://food.bolt.eu/en-US/2-tartu/p/1481-mcdonaldsr-lounakeskus/" },
+      { name: "Hesburger Raekoja plats", cuisine: "burger", dish: "Hesburger Double", url: "https://food.bolt.eu/en-US/2-tartu/p/2040-hesburger-tartu-kvartal/" },
+      { name: "Hesburger Lõunakeskus", cuisine: "burger", dish: "Crispy Chicken burger", url: "https://food.bolt.eu/en-US/2-tartu/p/81781-hesburger-tartu-l%C3%B5unakeskus/" },
+      { name: "Sushi King Tartu", cuisine: "sushi", dish: "Salmon nigiri set", url: "https://food.bolt.eu/en-us/2-tartu/p/44268-sushi-king-tartu/" },
+      { name: "Pappa Pizza Tartu", cuisine: "pizza", dish: "Margherita or pepperoni", url: "https://food.bolt.eu/en-US/2-tartu/p/21337-pappa-pizza-tartu/" },
+      { name: "Kolm Tilli", cuisine: "pizza", dish: "Neapolitan wood-fired pizza", url: "https://food.bolt.eu/en-US/2-tartu/" },
+      { name: "Kebab Pizza", cuisine: "kebab", dish: "Doner kebab wrap", url: "https://food.bolt.eu/en-US/2-tartu/p/52531-kebab-pizza/" },
+      { name: "Has Kebab", cuisine: "kebab", dish: "Mixed kebab plate", url: "https://food.bolt.eu/en/2-tartu/p/60875-has-kebab/" },
+      { name: "Kebab & Wok", cuisine: "kebab", dish: "Kebab or wok noodles", url: "https://food.bolt.eu/en/2-tartu/p/141405-kebab-wok/" },
+      { name: "Kebab Master", cuisine: "kebab", dish: "Kebab box with fries", url: "https://food.bolt.eu/en/2-tartu/p/15724-kebab-master/" },
+      { name: "Eugenio's Street Food", cuisine: "street", dish: "Chef's daily special", url: "https://food.bolt.eu/en-US/2-tartu/p/81810-eugenio's-street-food-tartu/" },
+      { name: "Kolm Tilli (Street food)", cuisine: "street", dish: "Bao buns or kimchi bowl", url: "https://food.bolt.eu/en-US/2-tartu/" },
+      { name: "The Irish Embassy Pub", cuisine: "pub", dish: "Fish & chips or loaded burger", url: "https://food.bolt.eu/en-US/2-tartu/p/18475-the-irish-embassy-pub-tartu/" },
+      { name: "Restaurant München", cuisine: "pub", dish: "Schnitzel or sausage platter", url: "https://food.bolt.eu/en-US/2-tartu/p/43006-restaurant-m%C3%BCnchen/" },
+      { name: "Alazani", cuisine: "georgian", dish: "Khinkali dumplings", url: "https://food.bolt.eu/en-US/2-tartu/p/53909-alazani/" },
+      { name: "BabyBack Ribs & BBQ", cuisine: "pub", dish: "Ribs rack with fries", url: "https://food.bolt.eu/en-US/2-tartu/p/6273-babyback-ribs-bbq-tartu/" },
+    ];
+
+    const REASONS = {
+      burger: "Fast, filling, and always hits the spot.",
+      pizza: "Comfort food you'll never regret.",
+      sushi: "Fresh, light, and satisfying.",
+      kebab: "Quick, flavourful, and great value.",
+      street: "Something a bit different today.",
+      pub: "Hearty and perfect when you're really hungry.",
+      georgian: "Underrated and absolutely delicious.",
+    };
+
+    let selectedCuisine = 'any';
+    let lastPick = null;
+
+    document.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        selectedCuisine = chip.dataset.cuisine;
+      });
+    });
+
+    function getSuggestion() {
+      const btn = document.getElementById('mainBtn');
+      const area = document.getElementById('resultArea');
+
+      btn.classList.add('loading');
+      btn.innerHTML = '<div class="spinner"></div>';
+
+      let pool = selectedCuisine === 'any' ? RESTAURANTS : RESTAURANTS.filter(r => r.cuisine === selectedCuisine);
+      if (pool.length === 0) pool = RESTAURANTS;
+
+      let available = pool.filter(r => r !== lastPick);
+      if (available.length === 0) available = pool;
+
+      const pick = available[Math.floor(Math.random() * available.length)];
+      lastPick = pick;
+
+      const reason = REASONS[pick.cuisine] || "A solid pick for today.";
+      const cuisineLabel = pick.cuisine.charAt(0).toUpperCase() + pick.cuisine.slice(1);
+
+      setTimeout(() => {
+        area.innerHTML = `
+          <div class="result-card">
+            <div class="result-top">
+              <div>
+                <p class="result-meal">${pick.dish}</p>
+                <p class="result-restaurant">from ${pick.name}</p>
+              </div>
+              <span class="cuisine-tag">${cuisineLabel}</span>
+            </div>
+            <p class="result-why">${reason}</p>
+            <a class="bolt-link" href="${pick.url}" target="_blank">⚡ Order on Bolt Food</a>
+            <button class="again-btn" onclick="getSuggestion()">Not feeling it — try again</button>
+          </div>
+        `;
+        btn.classList.remove('loading');
+        btn.innerHTML = '<span class="btn-emoji">🍽️</span><span class="btn-label">Surprise me</span>';
+      }, 600);
+    }
+  </script>
+</body>
+</html>
